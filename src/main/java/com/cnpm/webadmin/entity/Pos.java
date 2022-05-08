@@ -1,6 +1,8 @@
 package com.cnpm.webadmin.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,13 +24,17 @@ public class Pos extends Auditable<String> implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "pos_product",
-            joinColumns = @JoinColumn(name = "pos_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<Product> products;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "pos", fetch = FetchType.LAZY)
+    @OrderBy("pos_id ASC")
+    private List<PosProduct> posProductList;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    //total price of pos
+    @Column(name = "total_price")
+    private Long totalPrice;
 }

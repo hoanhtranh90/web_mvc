@@ -6,6 +6,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils {
+    public static final String COMMA = ",";
+    public static String buildLikeExp(String query) {
+        if (query == null || !isTrue(query.trim())) {
+            return null;
+        }
+        return "%" + query.trim().toLowerCase().replaceAll("\\s+", "%") + "%";
+    }
     public static Boolean isTrue(Object value) {
 
         if (value == null) {

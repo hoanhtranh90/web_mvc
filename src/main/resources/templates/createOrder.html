@@ -4,26 +4,206 @@
 
 <div class="d-flex">
     <div th:replace="fragments/sliderbar :: sliderbar"></div>
-    <div>
-        <button type="button" class="btn btn-primary">create order</button>
+    <div style="width: 100%;">
 
 
+        <div class="container-fluid o-field">
+            <div class="row mt-3 ml-3 mr-3">
+                <div class="col-lg-4">
+                    <div class="card bg-light ">
+                        <div class="card-header  ">
+                            <b>List</b>
+                        </div>
+                        <div class="card-body">
+                            <form action="" id="manage-order" th:action="@{/c-create-pos}" th:object="${pos}"
+                                  method="post">
+                                <input type="hidden" name="id">
+                                <div class="bg-white" id='o-list'>
 
-        <!--        viet code o day-->
+                                    <table class="table table-bordered bg-light">
+                                        <colgroup>
+                                            <col width="40%">
+                                            <col width="40%">
+                                            <col width="5%">
+                                        </colgroup>
+                                        <thead>
+                                        <tr>
+                                            <th>Số lượng</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Giá sản phẩm</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="product-list">
 
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-block bg-white" id="calc">
+                                    <table class="" width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td><b><h4>Total</h4></b></td>
+                                            <td class="text-right">
+                                                <input type="hidden" name="total_amount" value="0">
+                                                <input type="hidden" name="total_tendered" value="0">
+                                                <span class=""><h4><b id="total_amount">0.00</b></h4></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8  p-field">
+                    <div class="card ">
+                        <div class="card-header bg-light text-white  ">
+                            <b>Products</b>
+                        </div>
+                        <div class="card-body bg-light d-flex" id='prod-list'>
+                            <div class="col-md-12 h-100 bg-white" style="overflow:auto">
+                                <hr>
+                                <div class="d-flex w-100 mb-2">
+                                    <label for="" class="text-dark col-sm-2"><b>Search</b></label>
+                                    <input type="text" class="form-control form-control-sm col-sm-10" id="filter">
+                                </div>
+                                <table class="table table-bordered table-hover bg-white" id="p-list">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Item Code</th>
+                                        <th class="text-center">Item Name</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
+                                    <tr class="p-item" th:each="product,index : ${products}">
+                                        <td class="text-center" th:text="${index.index +1 }"></td>
+                                        <td><b th:text="${product.productCode}"></b></td>
+                                        <td><b th:text="${product.productName}"></b></td>
+                                        <td><b th:text="${product.productPrice}"></b></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" type="button"
+                                                    th:attr="onclick=|buyItem('${product.id}', '${product.productName}', '${product.productCode}', '${product.productPrice}')|">
+                                                Mua
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light  ">
+                            <div class="row justify-content-center">
+                                <div class="btn btn btn-sm col-sm-3 btn-primary mr-2" type="button" id="pay"
+                                     data-bs-toggle="modal" data-bs-target="#exampleModal">Pay
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
     </div>
-</div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận thanh toán</h5>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy bỏ</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
 
 
 <div th:replace="fragments/footer :: footer"></div>
 </html>
 
-<script>
+<script th:inline="javascript">
+    var items = [];
+
+    function submitForm() {
+        let form = {
+            products: items,
+            totalPrice: items.reduce((a, b) => parseInt(a) + parseInt(b.productPrice) * b.quantity, 0)
+        }
+        $.ajax({
+            type: 'post',
+            contentType: 'application/json; charset=utf-8',
+            // dataType: 'json',
+            url: [[@{'/c-create-pos'}]],
+            data: JSON.stringify(form),
+            success: function (returnedData) {
+                console.log(returnedData);
+                window.location.href = '/order-manager'
+                $("#exampleModal").hide();
+            },
+
+            error: function (xhr, exception) {
+
+            }
+        })
+
+
+    }
+
+    function deleteItem(index) {
+        items.splice(index, 1);
+        renderItems();
+    }
+
+    function renderItems() {
+        $("#product-list").html("");
+        $("#total_amount").html("0.00");
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            let html = `<tr></tr><td>` + item.quantity + `</td><td>` + item.productName + `</td><td>` + item.productPrice + `</td></td><td><span onclick="deleteItem(` + i + `)" class="btn btn-sm btn-danger btn-rem"><b><i class="fa fa-times text-white"></i></b></span></td></tr>`
+            $("#product-list").prepend(html);
+        }
+        $("#total_amount").html(items.reduce((a, b) => parseInt(a) + parseInt(b.productPrice) * b.quantity, 0));
+    }
+
+    function buyItem(id, name, code, price) {
+        let item = {
+            id: id,
+            productName: name,
+            productCode: code,
+            productPrice: price,
+            quantity: 1
+        };
+        let checkExist = items.find(item => item.id == id);
+        if (checkExist) {
+            checkExist.quantity++;
+        } else {
+            items.push(item);
+        }
+        renderItems();
+    }
+
     $(document).ready(function () {
         $("#createOrder").addClass("active");
+
     });
+
+
 </script>
