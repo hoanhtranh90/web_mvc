@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+
+<style>
+
+    td {
+        vertical-align: middle !important;
+    }
+
+    td p {
+        margin: unset;
+    }
+</style>
+
+
+<div th:replace="fragments/header :: header"></div>
+
+<div class="d-flex">
+    <div th:replace="fragments/sliderbar :: sliderbar"></div>
+    <div style="width: 100%;">
+
+
+        <!--        viet code o day-->
+
+        <div class="container-fluid">
+
+            <div class="col-lg-12">
+                <div class="row">
+                    <!-- FORM Panel -->
+                    <div class="col-md-4">
+                        <form action="#" id="manage-product" th:action="@{/c-create-product}" th:object="${product}" method="post">
+                            <div class="card">
+                                <div class="card-header">
+                                    Tạo mới sản phẩm
+                                </div>
+                                <div class="card-body">
+                                    <input type="hidden" id="productId" name="id" th:field="*{id}">
+                                    <div class="form-group">
+                                        <label class="control-label">Tên sản phẩm</label>
+                                        <input type="text" id="productName" class="form-control" name="productName"  th:field="*{productName}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Mã sản phẩm</label>
+                                        <input type="text" id="productCode" class="form-control" name="productCode" th:field="*{productCode}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Giá sản phẩm</label>
+                                        <input type="text" id="productPrice" class="form-control" name="productPrice" th:field="*{productPrice}">
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <button class="btn btn-sm btn-primary col-sm-3 offset-md-3"> Lưu</button>
+                                            <button class="btn btn-sm btn-default col-sm-3" type="button"
+                                                    onclick="$('#manage-product').get(0).reset()"> Xóa
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- FORM Panel -->
+
+                    <!-- Table Panel -->
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <b>Supplier List</b>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Thông tin sản phẩm</th>
+                                        <th class="text-center">Hành động</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="product,index : ${products}">
+                                        <td class="text-center" th:text="${index.index +1 }"></td>
+                                        <td class="">
+                                            <p>Tên sản phẩm: <b th:text="${product.productName}"></b></p>
+                                            <p><small>Mã sản phẩm: <b th:text="${product.productCode}"></b></small></p>
+                                            <p><small>Giá: <b th:text="${product.productPrice}"></b></small></p>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-primary edit_supplier" type="button"  id="edit-button"  th:attr="onclick=|editProduct('${product.id}', '${product.productName}', '${product.productCode}', '${product.productPrice}')|">Sửa</button>
+                                            <button class="btn btn-sm btn-danger delete_supplier" type="button" >Xóa</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+<div th:replace="fragments/footer :: footer"></div>
+
+
+<script th:inline="javascript">
+    function editProduct(id, productName, productCode, productPrice) {
+        document.getElementById('productName').value = productName;
+        document.getElementById('productCode').value = productCode;
+        document.getElementById('productPrice').value = productPrice;
+        document.getElementById('productId').value = id;
+    }
+    $(document).ready(function () {
+        $("#product-manager").addClass("active");
+    });
+</script>
+</html>

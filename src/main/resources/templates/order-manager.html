@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<style>
+
+</style>
+
+
+
+<div th:replace="fragments/header :: header"></div>
+
+<div class="d-flex">
+    <div th:replace="fragments/sliderbar :: sliderbar"></div>
+    <div>
+        <button type="button" class="btn btn-primary">order manbager</button>
+
+
+
+        <!--        viet code o day-->
+
+
+
+
+    </div>
+</div>
+
+
+
+<div th:replace="fragments/footer :: footer"></div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#order-manager").addClass("active");
+    });
+</script>
+</html>

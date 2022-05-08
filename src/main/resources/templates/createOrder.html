@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<div th:replace="fragments/header :: header"></div>
+
+<div class="d-flex">
+    <div th:replace="fragments/sliderbar :: sliderbar"></div>
+    <div>
+        <button type="button" class="btn btn-primary">create order</button>
+
+
+
+        <!--        viet code o day-->
+
+
+
+
+    </div>
+</div>
+
+
+
+<div th:replace="fragments/footer :: footer"></div>
+</html>
+
+<script>
+    $(document).ready(function () {
+        $("#createOrder").addClass("active");
+    });
+</script>
